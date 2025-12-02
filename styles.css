@@ -1,0 +1,376 @@
+/* =========================================
+   1. RESET Y ESTRUCTURA PRINCIPAL
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif; /* Fuente moderna */
+    /* FONDO GAMER: Degradado diagonal */
+    background: linear-gradient(135deg, #1cb5e0 0%, #000851 100%);
+    color: white;
+    
+    /* CENTRADO PERFECTO VERTICAL Y HORIZONTAL */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+    padding: 20px;
+}
+
+/* =========================================
+   2. TIPOGRAFÍA Y TÍTULOS
+   ========================================= */
+.titulo {
+    color: #ffd700; /* Oro */
+    text-shadow: 0px 4px 10px rgba(0,0,0,0.5); /* Sombra suave */
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.subtitulo {
+    color: #f0f0f0;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 30px;
+}
+
+/* Ocultamos secciones inactivas */
+#seleccionar-ataque, #reiniciar {
+    display: none;
+    /* Animación de entrada suave */
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   3. TARJETAS DE SELECCIÓN (MASCOTAS)
+   ========================================= */
+.tarjetas {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+.tarjeta-de-mokepon {
+    width: 180px;
+    background: rgba(255, 255, 255, 0.95); /* Blanco casi opaco */
+    padding: 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 4px solid transparent;
+    transition: all 0.3s ease;
+    
+    /* UX: Centrado interno */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333; /* Texto oscuro dentro de tarjeta */
+}
+
+.tarjeta-de-mokepon p {
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.tarjeta-de-mokepon img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2)); /* Sombra a la imagen */
+    transition: transform 0.3s;
+}
+
+/* HOVER: Efecto de levitación */
+.tarjeta-de-mokepon:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+
+.tarjeta-de-mokepon:hover img {
+    transform: scale(1.1);
+}
+
+/* SELECCIONADO: Borde Brillante */
+input[type="radio"]:checked + .tarjeta-de-mokepon {
+    border-color: #ffd700;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    transform: scale(1.05);
+}
+
+/* =========================================
+   4. ARENA DE BATALLA (GRID)
+   ========================================= */
+.grid-combate {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Alineación vertical perfecta */
+    gap: 40px;
+    margin: 20px 0 40px 0;
+    width: 100%;
+    max-width: 800px;
+}
+
+.tarjeta-combate {
+    background: rgba(255, 255, 255, 0.1); /* Vidrio oscuro */
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    width: 220px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.nombre-mascota {
+    color: #ffd700;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.tarjeta-combate img {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    /* Animación de flotar suave */
+    animation: flotar 3s ease-in-out infinite; 
+}
+
+@keyframes flotar {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+#imagen-enemigo {
+    transform: scaleX(-1); /* Espejo para el enemigo */
+    animation: flotarEnemigo 3s ease-in-out infinite;
+}
+@keyframes flotarEnemigo {
+    0% { transform: scaleX(-1) translateY(0px); }
+    50% { transform: scaleX(-1) translateY(-10px); }
+    100% { transform: scaleX(-1) translateY(0px); }
+}
+
+.vidas {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    background: rgba(0,0,0,0.3);
+    padding: 5px 15px;
+    border-radius: 50px;
+}
+
+/* ESTILO DEL VS */
+.vs-sign {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #1a2a6c;
+    background: #ffd700;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    z-index: 2;
+}
+
+/* =========================================
+   5. ATAQUES DEL ENEMIGO (CIRCULITOS)
+   ========================================= */
+.ataques-enemigo-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.boton-enemigo {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+.boton-enemigo img {
+    width: 20px !important; /* Forzar tamaño pequeño */
+    height: 20px !important;
+    animation: none !important; /* Sin animación de flotar aquí */
+}
+
+.ataque-gastado {
+    filter: grayscale(100%);
+    opacity: 0.4;
+    transform: scale(0.8);
+    background: #333;
+}
+
+/* =========================================
+   6. BOTONES DE ATAQUE JUGADOR
+   ========================================= */
+.botones-ataque {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.boton-de-ataque {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 5px 0 #ccc; /* Efecto 3D botón físico */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.boton-de-ataque:hover {
+    transform: translateY(-2px);
+    background: #fff;
+    box-shadow: 0 7px 0 #fff;
+}
+
+.boton-de-ataque:active {
+    transform: translateY(5px); /* Efecto de presionar */
+    box-shadow: 0 0 0 #ccc;
+}
+
+.boton-de-ataque img {
+    width: 50px;
+    height: 50px;
+}
+
+.boton-de-ataque:disabled {
+    background: #555;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.5;
+    transform: none;
+}
+
+/* =========================================
+   7. BOTONES PRINCIPALES (Seleccionar / Reiniciar)
+   ========================================= */
+#boton-mascota, #boton-reiniciar {
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(to right, #ffd700, #ffaa00);
+    color: #1a2a6c;
+    box-shadow: 0 5px 15px rgba(255, 170, 0, 0.4);
+    transition: 0.3s;
+    text-transform: uppercase;
+    margin-top: 20px;
+}
+
+#boton-mascota:hover, #boton-reiniciar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(255, 170, 0, 0.6);
+}
+
+/* =========================================
+   8. HISTORIAL DE MENSAJES
+   ========================================= */
+#mensajes {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.mensaje-batalla {
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.9);
+    color: #333;
+    font-weight: 700;
+    text-align: center;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.ganaste { border-left: 8px solid #2ecc71; background: #e8f8f5; }
+.perdiste { border-left: 8px solid #e74c3c; background: #fdedec; }
+.empate { border-left: 8px solid #95a5a6; background: #f4f6f7; }
+
+.mensaje-final {
+    background: #ffd700;
+    color: #1a2a6c;
+    font-size: 1.5rem;
+    border: 4px solid #fff;
+}
+
+/* =========================================
+   9. RESPONSIVE (MÓVIL)
+   ========================================= */
+@media (max-width: 700px) {
+    body {
+        padding: 10px;
+        justify-content: flex-start; /* En móvil dejamos scroll normal */
+    }
+    
+    .titulo { font-size: 2.5rem; }
+    
+    .grid-combate {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .vs-sign { transform: scale(0.8); margin: -10px 0; }
+    
+    .botones-ataque { flex-wrap: wrap; }
+    
+    .boton-de-ataque { width: 60px; height: 60px; }
+    .boton-de-ataque img { width: 35px; height: 35px; }
+}

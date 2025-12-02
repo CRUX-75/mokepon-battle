@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOKEPON!</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <section id="seleccionar-mascota">
+        <h1 class="titulo">MOKEPON!</h1>
+
+        <h2 class="subtitulo">Elige tu mascota:</h2>
+
+        <div class="tarjetas">
+            <input type="radio" name="mascota" id="hipodoge" value="Hipodoge">
+            <label class="tarjeta-de-mokepon" for="hipodoge">
+                <p>Hipodoge</p>
+                <img src="./assets/hipodoge.png" alt="Hipodoge">
+            </label>
+
+            <input type="radio" name="mascota" id="capipepo" value="Capipepo">
+            <label class="tarjeta-de-mokepon" for="capipepo">
+                <p>Capipepo</p>
+                <img src="./assets/capipepo.png" alt="Capipepo">
+            </label>
+
+            <input type="radio" name="mascota" id="ratigueya" value="Ratigueya">
+            <label class="tarjeta-de-mokepon" for="ratigueya">
+                <p>Ratigueya</p>
+                <img src="./assets/ratigueya.png" alt="Ratigueya">
+            </label>
+        </div>
+
+        <button id="boton-mascota">Seleccionar</button>
+    </section>
+
+    <section id="seleccionar-ataque">
+        <h1 class="titulo">MOKEPON!</h1>
+
+        <h2 class="subtitulo">¡A LA BATALLA!</h2>
+
+        <div class="grid-combate">
+            
+            <div class="tarjeta-combate">
+                <p class="nombre-mascota">TU GUERRERO</p>
+                <img id="imagen-jugador" src="./assets/hipodoge.png" alt="Tu Mascota"> 
+                <p id="mascota-jugador"></p>
+                <p class="vidas">Victorias: <span id="victorias-jugador">0</span></p>
+            </div>
+
+            <div class="vs-sign">VS</div>
+
+            <div class="tarjeta-combate">
+                <p class="nombre-mascota">ENEMIGO</p>
+                <img id="imagen-enemigo" src="./assets/capipepo.png" alt="Enemigo">
+                <p id="mascota-enemigo"></p>
+                <p class="vidas">Victorias: <span id="victorias-enemigo">0</span></p>
+                
+                <div id="ataques-enemigo-contenedor" class="ataques-enemigo-box"></div>
+            </div>
+        </div>
+
+        <h3 class="subtitulo">Elige tu ataque:</h3>
+
+        <div class="botones-ataque" id="contenedor-ataques"></div>
+
+        <div id="mensajes">
+            <p>¡Que comience el combate!</p>
+        </div>
+
+        <div id="reiniciar">
+            <button id="boton-reiniciar">Reiniciar Juego</button>
+        </div>
+    </section>
+
+    <script src="./js/pokemon.js"></script>
+</body>
+</html>
