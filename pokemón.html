@@ -9,7 +9,6 @@
 <body>
     <section id="seleccionar-mascota">
         <h1 class="titulo">MOKEPON!</h1>
-
         <h2 class="subtitulo">Elige tu mascota:</h2>
 
         <div class="tarjetas">
@@ -35,45 +34,58 @@
         <button id="boton-mascota">Seleccionar</button>
     </section>
 
-    <section id="seleccionar-ataque">
-        <h1 class="titulo">MOKEPON!</h1>
-
-        <h2 class="subtitulo">¡A LA BATALLA!</h2>
-
-        <div class="grid-combate">
-            
-            <div class="tarjeta-combate">
-                <p class="nombre-mascota">TU GUERRERO</p>
-                <img id="imagen-jugador" src="./assets/hipodoge.png" alt="Tu Mascota"> 
-                <p id="mascota-jugador"></p>
-                <p class="vidas">Victorias: <span id="victorias-jugador">0</span></p>
+    <section id="ver-mapa">
+        <h2 class="subtitulo">¡Recorre el mapa con tu Mokepon!</h2>
+        <canvas id="mapa"></canvas>
+        <div class="botones-movimiento">
+            <button onmousedown="moverArriba()" onmouseup="detenerMovimiento()" ontouchstart="moverArriba()" ontouchend="detenerMovimiento()">⬆️</button>
+            <div class="botones-horizontales">
+                <button onmousedown="moverIzquierda()" onmouseup="detenerMovimiento()" ontouchstart="moverIzquierda()" ontouchend="detenerMovimiento()">⬅️</button>
+                <button onmousedown="moverDerecha()" onmouseup="detenerMovimiento()" ontouchstart="moverDerecha()" ontouchend="detenerMovimiento()">➡️</button>
             </div>
-
-            <div class="vs-sign">VS</div>
-
-            <div class="tarjeta-combate">
-                <p class="nombre-mascota">ENEMIGO</p>
-                <img id="imagen-enemigo" src="./assets/capipepo.png" alt="Enemigo">
-                <p id="mascota-enemigo"></p>
-                <p class="vidas">Victorias: <span id="victorias-enemigo">0</span></p>
-                
-                <div id="ataques-enemigo-contenedor" class="ataques-enemigo-box"></div>
-            </div>
-        </div>
-
-        <h3 class="subtitulo">Elige tu ataque:</h3>
-
-        <div class="botones-ataque" id="contenedor-ataques"></div>
-
-        <div id="mensajes">
-            <p>¡Que comience el combate!</p>
-        </div>
-
-        <div id="reiniciar">
-            <button id="boton-reiniciar">Reiniciar Juego</button>
+            <button onmousedown="moverAbajo()" onmouseup="detenerMovimiento()" ontouchstart="moverAbajo()" ontouchend="detenerMovimiento()">⬇️</button>
         </div>
     </section>
 
-    <script src="./js/pokemon.js"></script>
+    <section id="seleccionar-ataque">
+        <h1 class="titulo">MOKEPON!</h1>
+        <h2 class="subtitulo">¡A LA BATALLA!</h2>
+
+        <div class="duelo-container">
+            <div class="columna-juego">
+                <div class="grid-combate">
+                    <div class="tarjeta-combate">
+                        <p class="nombre-mascota">TU GUERRERO</p>
+                        <img id="imagen-jugador" src="./assets/hipodoge.png" alt="Tu Mascota"> 
+                        <p id="mascota-jugador"></p>
+                        <p class="vidas">Victorias: <span id="victorias-jugador">0</span></p>
+                    </div>
+                    <div class="vs-sign">VS</div>
+                    <div class="tarjeta-combate">
+                        <p class="nombre-mascota">ENEMIGO</p>
+                        <img id="imagen-enemigo" src="./assets/capipepo.png" alt="Enemigo">
+                        <p id="mascota-enemigo"></p>
+                        <p class="vidas">Victorias: <span id="victorias-enemigo">0</span></p>
+                        <div id="ataques-enemigo-contenedor" class="ataques-enemigo-box"></div>
+                    </div>
+                </div>
+
+                <h3 class="subtitulo">Elige tu ataque:</h3>
+                <div class="botones-ataque" id="contenedor-ataques"></div>
+            </div>
+
+            <div class="columna-info">
+                <h3 class="subtitulo">Historial de Combate</h3>
+                <div id="mensajes" class="caja-mensajes">
+                    <p>¡Que comience el combate!</p>
+                </div>
+                <div id="reiniciar">
+                    <button id="boton-reiniciar">Reiniciar Juego</button>
+                </div>
+            </div>
+        </div> 
+    </section>
+
+    <script src="./js/pokemon.js"></script> 
 </body>
 </html>

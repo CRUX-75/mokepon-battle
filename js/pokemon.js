@@ -1,16 +1,19 @@
-// --- CONSTANTES (Para evitar errores de escritura) ---
+// =========================================
+// 1. CONSTANTES Y CONFIGURACIÓN
+// =========================================
 const TIPO_FUEGO = 'FUEGO'
 const TIPO_AGUA = 'AGUA'
 const TIPO_TIERRA = 'TIERRA'
 
-// Reglas: Quién gana a quién
 const VENTAJAS = {
     [TIPO_FUEGO]: TIPO_TIERRA,
     [TIPO_AGUA]: TIPO_FUEGO,
     [TIPO_TIERRA]: TIPO_AGUA
 }
 
-// --- VARIABLES GLOBALES ---
+// =========================================
+// 2. VARIABLES GLOBALES
+// =========================================
 let ataqueJugador = []
 let ataqueEnemigo = []
 let victoriasJugador = 0
@@ -18,59 +21,118 @@ let victoriasEnemigo = 0
 let botones = []
 let ataquesMokeponEnemigo = []
 
-// --- BASE DE DATOS MOKEPONES ---
-const MOKEPONES = {
-    'Hipodoge': { 
-        nombre: 'Hipodoge', 
-        imagen: './assets/hipodoge.png',
-        ataques: [
-            { nombre: '💧', id: 'boton-agua', tipo: TIPO_AGUA, foto: './assets/agua.png' },
-            { nombre: '💧', id: 'boton-agua', tipo: TIPO_AGUA, foto: './assets/agua.png' },
-            { nombre: '💧', id: 'boton-agua', tipo: TIPO_AGUA, foto: './assets/agua.png' },
-            { nombre: '🔥', id: 'boton-fuego', tipo: TIPO_FUEGO, foto: './assets/fuego.png' },
-            { nombre: '🌱', id: 'boton-tierra', tipo: TIPO_TIERRA, foto: './assets/tierra.png' },
-        ]
-    },
-    'Capipepo': { 
-        nombre: 'Capipepo', 
-        imagen: './assets/capipepo.png',
-        ataques: [
-            { nombre: '🌱', id: 'boton-tierra', tipo: TIPO_TIERRA, foto: './assets/tierra.png' },
-            { nombre: '🌱', id: 'boton-tierra', tipo: TIPO_TIERRA, foto: './assets/tierra.png' },
-            { nombre: '🌱', id: 'boton-tierra', tipo: TIPO_TIERRA, foto: './assets/tierra.png' },
-            { nombre: '💧', id: 'boton-agua', tipo: TIPO_AGUA, foto: './assets/agua.png' },
-            { nombre: '🔥', id: 'boton-fuego', tipo: TIPO_FUEGO, foto: './assets/fuego.png' },
-        ]
-    },
-    'Ratigueya': { 
-        nombre: 'Ratigueya', 
-        imagen: './assets/ratigueya.png',
-        ataques: [
-            { nombre: '🔥', id: 'boton-fuego', tipo: TIPO_FUEGO, foto: './assets/fuego.png' },
-            { nombre: '🔥', id: 'boton-fuego', tipo: TIPO_FUEGO, foto: './assets/fuego.png' },
-            { nombre: '🔥', id: 'boton-fuego', tipo: TIPO_FUEGO, foto: './assets/fuego.png' },
-            { nombre: '💧', id: 'boton-agua', tipo: TIPO_AGUA, foto: './assets/agua.png' },
-            { nombre: '🌱', id: 'boton-tierra', tipo: TIPO_TIERRA, foto: './assets/tierra.png' },
-        ]
+// Variables del Mapa
+let lienzo = document.getElementById('mapa')
+let mapa = lienzo.getContext('2d')
+let intervalo
+let mapaBackground = new Image()
+mapaBackground.src = './assets/mokemap.png'
+
+const anchoMaximoMapa = 600
+
+let anchoDelMapa = window.innerWidth - 80 // Restamos más espacio para los márgenes
+if (anchoDelMapa < 320) {
+    anchoDelMapa = 320 - 40 // Mínimo de seguridad
+}
+// Ajuste Responsive del Canvas
+if (anchoDelMapa > anchoMaximoMapa) {
+    anchoDelMapa = anchoMaximoMapa - 20
+}
+let alturaQueBuscamos = anchoDelMapa * 600 / 800
+lienzo.width = anchoDelMapa
+lienzo.height = alturaQueBuscamos
+
+// =========================================
+// 3. CLASES Y OBJETOS
+// =========================================
+class Mokepon {
+    constructor(nombre, foto, vida, fotoMapa, x = 10, y = 10) {
+        this.nombre = nombre
+        this.foto = foto
+        this.vida = vida
+        this.ataques = []
+        this.ancho = 40
+        this.alto = 40
+        this.x = x
+        this.y = y
+        this.mapaFoto = new Image()
+        this.mapaFoto.src = fotoMapa
+        this.velocidadX = 0
+        this.velocidadY = 0
+    }
+
+    pintarMokepon() {
+        mapa.drawImage(
+            this.mapaFoto,
+            this.x,
+            this.y,
+            this.ancho,
+            this.alto
+        )
     }
 }
 
-// --- UTILIDADES ---
-const getId = (id) => document.getElementById(id)
-const ocultarElemento = (id) => getId(id).style.display = 'none'
-const mostrarElemento = (id) => getId(id).style.display = 'block'
-const aleatorio = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+// --- Definición de Ataques ---
+const HIPODOGE_ATAQUES = [
+    { nombre: '💧', id: 'boton-agua', tipo: TIPO_AGUA, foto: './assets/agua.png' },
+    { nombre: '💧', id: 'boton-agua', tipo: TIPO_AGUA, foto: './assets/agua.png' },
+    { nombre: '💧', id: 'boton-agua', tipo: TIPO_AGUA, foto: './assets/agua.png' },
+    { nombre: '🔥', id: 'boton-fuego', tipo: TIPO_FUEGO, foto: './assets/fuego.png' },
+    { nombre: '🌱', id: 'boton-tierra', tipo: TIPO_TIERRA, foto: './assets/tierra.png' },
+]
 
-// --- INICIO ---
+const CAPIPEPO_ATAQUES = [
+    { nombre: '🌱', id: 'boton-tierra', tipo: TIPO_TIERRA, foto: './assets/tierra.png' },
+    { nombre: '🌱', id: 'boton-tierra', tipo: TIPO_TIERRA, foto: './assets/tierra.png' },
+    { nombre: '🌱', id: 'boton-tierra', tipo: TIPO_TIERRA, foto: './assets/tierra.png' },
+    { nombre: '💧', id: 'boton-agua', tipo: TIPO_AGUA, foto: './assets/agua.png' },
+    { nombre: '🔥', id: 'boton-fuego', tipo: TIPO_FUEGO, foto: './assets/fuego.png' },
+]
+
+const RATIGUEYA_ATAQUES = [
+    { nombre: '🔥', id: 'boton-fuego', tipo: TIPO_FUEGO, foto: './assets/fuego.png' },
+    { nombre: '🔥', id: 'boton-fuego', tipo: TIPO_FUEGO, foto: './assets/fuego.png' },
+    { nombre: '🔥', id: 'boton-fuego', tipo: TIPO_FUEGO, foto: './assets/fuego.png' },
+    { nombre: '💧', id: 'boton-agua', tipo: TIPO_AGUA, foto: './assets/agua.png' },
+    { nombre: '🌱', id: 'boton-tierra', tipo: TIPO_TIERRA, foto: './assets/tierra.png' },
+]
+
+// --- Creación de Instancias (Jugador) ---
+let hipodoge = new Mokepon('Hipodoge', './assets/hipodoge.png', 5, './assets/hipodoge.png')
+let capipepo = new Mokepon('Capipepo', './assets/capipepo.png', 5, './assets/capipepo.png')
+let ratigueya = new Mokepon('Ratigueya', './assets/ratigueya.png', 5, './assets/ratigueya.png')
+
+hipodoge.ataques.push(...HIPODOGE_ATAQUES)
+capipepo.ataques.push(...CAPIPEPO_ATAQUES)
+ratigueya.ataques.push(...RATIGUEYA_ATAQUES)
+
+let mokepones = [hipodoge, capipepo, ratigueya]
+
+// --- Creación de Instancias (Enemigos del Mapa) ---
+let hipodogeEnemigo = new Mokepon('Hipodoge', './assets/hipodoge.png', 5, './assets/hipodoge.png', 150, 100)
+let capipepoEnemigo = new Mokepon('Capipepo', './assets/capipepo.png', 5, './assets/capipepo.png', 250, 180)
+let ratigueyaEnemigo = new Mokepon('Ratigueya', './assets/ratigueya.png', 5, './assets/ratigueya.png', 50, 200)
+
+hipodogeEnemigo.ataques.push(...HIPODOGE_ATAQUES)
+capipepoEnemigo.ataques.push(...CAPIPEPO_ATAQUES)
+ratigueyaEnemigo.ataques.push(...RATIGUEYA_ATAQUES)
+
+// Lista de enemigos para gestionar colisiones fácilmente
+let enemigosMapa = [hipodogeEnemigo, capipepoEnemigo, ratigueyaEnemigo]
+
+
+// =========================================
+// 4. FUNCIONES DE INICIO Y SELECCIÓN
+// =========================================
 function iniciarJuego() {
     ocultarElemento('seleccionar-ataque')
+    ocultarElemento('ver-mapa')
     ocultarElemento('reiniciar')
     
     getId('boton-mascota').addEventListener('click', seleccionarMascotaJugador)
     getId('boton-reiniciar').addEventListener('click', reiniciarJuego)
 }
 
-// --- SELECCIÓN ---
 function seleccionarMascotaJugador() {
     const inputSeleccionado = document.querySelector('input[name="mascota"]:checked')
 
@@ -80,41 +142,111 @@ function seleccionarMascotaJugador() {
     }
 
     const nombreMascota = inputSeleccionado.value
-    const datosMascota = MOKEPONES[nombreMascota]
+    mascotaJugadorObjeto = mokepones.find(mokepon => mokepon.nombre === nombreMascota)
 
-    getId('mascota-jugador').innerHTML = datosMascota.nombre
-    getId('imagen-jugador').src = datosMascota.imagen
-
-    // Renderizar ataques
-    mostrarAtaques(datosMascota.ataques)
+    getId('mascota-jugador').innerHTML = mascotaJugadorObjeto.nombre
+    getId('imagen-jugador').src = mascotaJugadorObjeto.foto
+    mostrarAtaques(mascotaJugadorObjeto.ataques)
 
     ocultarElemento('seleccionar-mascota')
-    mostrarElemento('seleccionar-ataque')
-    
-    seleccionarMascotaEnemigo()
+    mostrarElemento('ver-mapa')
+    iniciarMapa()
 }
 
-function seleccionarMascotaEnemigo() {
-    const nombresDisponibles = Object.keys(MOKEPONES)
-    const indiceAleatorio = aleatorio(0, nombresDisponibles.length - 1)
-    const nombreEnemigo = nombresDisponibles[indiceAleatorio]
-    const datosEnemigo = MOKEPONES[nombreEnemigo]
+// =========================================
+// 5. LÓGICA DEL MAPA
+// =========================================
+function iniciarMapa() {
+    intervalo = setInterval(pintarCanvas, 50)
+    window.addEventListener('keydown', sePresionoTecla)
+    window.addEventListener('keyup', detenerMovimiento)
+}
 
-    getId('mascota-enemigo').innerHTML = datosEnemigo.nombre
-    getId('imagen-enemigo').src = datosEnemigo.imagen
+function pintarCanvas() {
+    // Actualizar posición Jugador
+    mascotaJugadorObjeto.x = mascotaJugadorObjeto.x + mascotaJugadorObjeto.velocidadX
+    mascotaJugadorObjeto.y = mascotaJugadorObjeto.y + mascotaJugadorObjeto.velocidadY
+
+    // Limpiar Canvas
+    mapa.clearRect(0, 0, lienzo.width, lienzo.height)
+
+    // Dibujar Fondo
+    mapa.drawImage(mapaBackground, 0, 0, lienzo.width, lienzo.height)
+
+    // Dibujar Jugador
+    mascotaJugadorObjeto.pintarMokepon()
+
+    // Dibujar Enemigos y Revisar Colisiones (Optimizado con forEach)
+    enemigosMapa.forEach(enemigo => {
+        enemigo.pintarMokepon()
+        revisarColision(enemigo)
+    })
+}
+
+function revisarColision(enemigo) {
+    const arribaEnemigo = enemigo.y
+    const abajoEnemigo = enemigo.y + enemigo.alto
+    const derechaEnemigo = enemigo.x + enemigo.ancho
+    const izquierdaEnemigo = enemigo.x
+
+    const arribaMascota = mascotaJugadorObjeto.y
+    const abajoMascota = mascotaJugadorObjeto.y + mascotaJugadorObjeto.alto
+    const derechaMascota = mascotaJugadorObjeto.x + mascotaJugadorObjeto.ancho
+    const izquierdaMascota = mascotaJugadorObjeto.x
+
+    if(
+        abajoMascota < arribaEnemigo ||
+        arribaMascota > abajoEnemigo ||
+        derechaMascota < izquierdaEnemigo ||
+        izquierdaMascota > derechaEnemigo
+    ) {
+        return // No hay colisión
+    }
+
+    // ¡COLISIÓN DETECTADA!
+    detenerMovimiento()
+    clearInterval(intervalo)
     
-    // Clonación segura del array de ataques
-    ataquesMokeponEnemigo = [...datosEnemigo.ataques]
+    ocultarElemento('ver-mapa')
+    mostrarElemento('seleccionar-ataque')
+    seleccionarMascotaEnemigo(enemigo)
+}
+
+// Controles de Movimiento
+function moverDerecha() { mascotaJugadorObjeto.velocidadX = 5 }
+function moverIzquierda() { mascotaJugadorObjeto.velocidadX = -5 }
+function moverAbajo() { mascotaJugadorObjeto.velocidadY = 5 }
+function moverArriba() { mascotaJugadorObjeto.velocidadY = -5 }
+
+function detenerMovimiento() {
+    mascotaJugadorObjeto.velocidadX = 0
+    mascotaJugadorObjeto.velocidadY = 0
+}
+
+function sePresionoTecla(event) {
+    switch (event.key) {
+        case 'ArrowUp': moverArriba(); break
+        case 'ArrowDown': moverAbajo(); break
+        case 'ArrowLeft': moverIzquierda(); break
+        case 'ArrowRight': moverDerecha(); break
+    }
+}
+
+// =========================================
+// 6. LÓGICA DE BATALLA
+// =========================================
+function seleccionarMascotaEnemigo(enemigo) {
+    getId('mascota-enemigo').innerHTML = enemigo.nombre
+    getId('imagen-enemigo').src = enemigo.foto
+    ataquesMokeponEnemigo = [...enemigo.ataques]
     mostrarAtaquesEnemigo(ataquesMokeponEnemigo)
 }
 
-// --- RENDERIZADO OPTIMIZADO ---
 function mostrarAtaques(ataques) {
     const contenedorAtaques = getId('contenedor-ataques')
-    let ataquesHTML = "" // Variable temporal (Buffer)
+    let ataquesHTML = ""
 
     ataques.forEach((ataque, index) => {
-        // Usamos dataset.tipo para guardar si es FUEGO/AGUA/TIERRA en el HTML
         ataquesHTML += `
         <button id="${ataque.id}-${index}" class="boton-de-ataque bAtaque" data-tipo="${ataque.tipo}">
              <img src="${ataque.foto}" alt="${ataque.nombre}" style="pointer-events: none">
@@ -122,9 +254,7 @@ function mostrarAtaques(ataques) {
         `
     })
 
-    // Una sola inserción al DOM (Mucho más rápido)
     contenedorAtaques.innerHTML = ataquesHTML
-    
     botones = document.querySelectorAll('.bAtaque')
     secuenciaAtaque()
 }
@@ -141,24 +271,16 @@ function mostrarAtaquesEnemigo(ataques) {
             </div>
         `
     })
-    
-    // Una sola inserción al DOM
     contenedor.innerHTML = html
 }
 
-// --- SECUENCIA DE JUEGO ---
 function secuenciaAtaque() {
     botones.forEach((boton) => {
         boton.addEventListener('click', (e) => {
-            // Leemos el tipo directamente del data-attribute que guardamos antes
-            // Esto es más seguro que leer el ID o el texto
             const tipoAtaque = e.currentTarget.dataset.tipo
-            
             ataqueJugador.push(tipoAtaque)
-
             boton.style.background = '#ccc'
             boton.disabled = true 
-            
             ataqueAleatorioEnemigo()
         })
     })
@@ -170,18 +292,14 @@ function ataqueAleatorioEnemigo() {
     let indiceAleatorio = aleatorio(0, ataquesMokeponEnemigo.length - 1)
     let ataqueObjeto = ataquesMokeponEnemigo[indiceAleatorio]
     
-    // Usamos la propiedad .tipo que agregamos a la BD
     ataqueEnemigo.push(ataqueObjeto.tipo)
 
-    // Visual: Apagar botón
     let botonAtaqueEnemigo = document.getElementById(ataqueObjeto.id_unico)
     if (botonAtaqueEnemigo) {
         botonAtaqueEnemigo.classList.add('ataque-gastado')
     }
 
-    // Lógica: Eliminar carta
     ataquesMokeponEnemigo.splice(indiceAleatorio, 1)
-    
     iniciarPelea()
 }
 
@@ -191,7 +309,6 @@ function iniciarPelea() {
     }
 }
 
-// --- COMBATE OPTIMIZADO (Sin if/else gigantes) ---
 function combate() {
     let index = ataqueJugador.length - 1
     let jugador = ataqueJugador[index]
@@ -201,7 +318,6 @@ function combate() {
     if (jugador === enemigo) {
         resultado = "EMPATE"
     } else if (VENTAJAS[jugador] === enemigo) {
-        // Si mi ataque tiene ventaja sobre el enemigo (Ej: AGUA[FUEGO])
         resultado = "GANASTE"
         victoriasJugador++
     } else {
@@ -211,7 +327,6 @@ function combate() {
     
     getId('victorias-jugador').innerHTML = victoriasJugador
     getId('victorias-enemigo').innerHTML = victoriasEnemigo
-    
     crearMensaje(resultado, jugador, enemigo)
 
     if (ataqueJugador.length === 5) {
@@ -229,7 +344,9 @@ function revisarVidas() {
     }
 }
 
-// --- MENSAJES ---
+// =========================================
+// 7. MENSAJES Y UTILIDADES
+// =========================================
 function crearMensaje(resultado, ataqueJ, ataqueE) {
     const sectionMensajes = getId('mensajes')
     const parrafo = document.createElement('div')
@@ -245,17 +362,14 @@ function crearMensaje(resultado, ataqueJ, ataqueE) {
         parrafo.classList.add('empate')
         parrafo.innerHTML = `Tú: ${ataqueJ} 🆚 Rival: ${ataqueE} <br> 😐 EMPATE`
     }
-
     sectionMensajes.prepend(parrafo) 
 }
 
 function crearMensajeFinal(resultadoFinal) {
     const sectionMensajes = getId('mensajes')
     const parrafo = document.createElement('div')
-    
     parrafo.classList.add('mensaje-batalla', 'mensaje-final')
     parrafo.innerHTML = resultadoFinal
-
     sectionMensajes.prepend(parrafo)
     mostrarElemento('reiniciar')
 }
@@ -264,4 +378,11 @@ function reiniciarJuego() {
     location.reload()
 }
 
+// Helpers
+const getId = (id) => document.getElementById(id)
+const ocultarElemento = (id) => getId(id).style.display = 'none'
+const mostrarElemento = (id) => getId(id).style.display = 'flex'
+const aleatorio = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+
+// Arranque
 window.addEventListener('load', iniciarJuego)
